@@ -31,27 +31,26 @@
                     <input type="button" value="編集">
                 </a>
             </div>
+        </div>
             <!-- 返信するためのクラスを記述 -->
-            <!--
             <div class="comment-content">
-                <form method="post" action="/comment" th:object="${commentModel}">
+                <form method="post" action="/addComment">
                     <div class="form-area">
-                        <label>投稿内容</label>
-                        <textarea class="tweet-box" th:field="*{content}" size="20" maxlength="200" /></textarea><br/>
+                        <label>返信内容</label>
+                        <textarea class="tweet-box" name="content" size="20" maxlength="200" /></textarea><br/>
+                        <input name="message_id" th:value="${content.id}" type="hidden">
                         <input type="submit" value="返信" />
                     </div>
                 </form>
+                <div class="message-icon" th:each="comment : ${comments}">
+                    <div th:if="${content.id} == ${comment.message_id}">
+                        <div class="text">
+                            返信　: <span th:text="${comment.content}"></span>
+                        </div></div>
+                    </div>
             </div>
-            -->
-            <div class ="comment-icon" th:each="comment : ${comments}" th:if="${content.id} eq ${comment.message_id}">
-                <div>
-                    ID : <span th:text="${comment.id}"/>
-                </div>
-                <div class="text">
-                    投稿 : <span th:text="${comment.content}"></span>
-                </div>
-            </div>
-        </div>
+
+
     </div>
 </div>
 </body>

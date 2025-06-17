@@ -1,10 +1,13 @@
 package com.example.forum.controller;
 
+import com.example.forum.controller.form.CommentForm;
 import com.example.forum.controller.form.ReportForm;
+import com.example.forum.service.CommentService;
 import com.example.forum.service.ReportService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +18,9 @@ public class ForumController {
     @Autowired
     ReportService reportService;
 
+    @Autowired
+    CommentService commentService;
+
     /*
      * 投稿内容表示処理
      */
@@ -23,11 +29,27 @@ public class ForumController {
         ModelAndView mav = new ModelAndView();
         // 投稿を全件取得
         List<ReportForm> contentData = reportService.findAllReport();
+        //返信の全件取得
+        List<CommentForm> commentData = commentService.findAllComment();
         // 画面遷移先を指定
         mav.setViewName("/top");
         // 投稿データオブジェクトを保管
         mav.addObject("contents", contentData);
+        // 返信データのオブジェクトを保管
+        mav.addObject("comments", commentData);
+        mav.addObject("commentModel", new CommentForm());
         return mav;
+    }
+
+    @PostMapping("/addComment")
+    public ModelAndView addComment(@ModelAttribute("commentForm") CommentForm commentForm,
+                                   BindingResult result){
+
+        ModelAndView mav = new ModelAndView();
+        // コメントをテーブルに格納
+        commentService.saveComment(commentForm);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
     }
 
     /*
@@ -92,15 +114,5 @@ public class ForumController {
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
-    /*
-     * 返信をHTMLから受け取るメソッド
-     */
-    //@PostMapping("/comment")
-    //public ModelAndView commentContent(@ModelAttribute("commentModel") ReportForm reportForm){
-        // 投稿をテーブルに格納
-        //reportService.saveReport(reportForm);
-        // rootへリダイレクト
-        //return new ModelAndView("redirect:/");
-//    }
 
 }
