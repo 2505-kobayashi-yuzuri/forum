@@ -8,6 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
+
 //データベースにアクセスするために一時保管するBeansのようなもの
 @Entity
 @Table(name = "report")
@@ -23,6 +27,7 @@ public class Report {
     private String content;
 
     @Column
-    private String createdDate;
+    @CreationTimestamp
+    private Date createdDate;
 }
 
