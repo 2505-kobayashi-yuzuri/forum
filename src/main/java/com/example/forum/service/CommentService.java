@@ -1,11 +1,8 @@
 package com.example.forum.service;
 
 import com.example.forum.controller.form.CommentForm;
-import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.CommentRepository;
 import com.example.forum.repository.entity.Comment;
-import com.example.forum.repository.entity.Report;
-import org.aspectj.bridge.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +35,7 @@ public class CommentService {
             comment.setId(result.getId());
             comment.setMessage_id(result.getMessage_id());
             comment.setContent(result.getContent());
-            comments.add( comment);
+            comments.add(comment);
         }
         return  comments;
     }
@@ -60,6 +57,12 @@ public class CommentService {
         comment.setMessage_id(reqComment.getMessage_id());
         comment.setContent(reqComment.getContent());
         return  comment;
+    }
+    /*
+     *  削除処理を追加
+     */
+    public void deleteComment(Integer id) {
+        commentRepository.deleteById(id);
     }
 
     /*

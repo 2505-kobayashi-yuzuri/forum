@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml" lang="">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:name="http://www.w3.org/1999/xhtml" lang="">
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/style.css}" rel="styleSheet">
@@ -10,6 +10,14 @@
     <h1>匿名掲示板</h1>
 </div>
 <div class="main-contents">
+    <!-- カレンダーの表示 -->
+    <form action="./" method="get">
+        <input type="date" name="start" value="${start}" min="2020-01-01" max="2100-12-31">
+        ～
+        <input type="date"  name="end" value="${end}" min="2020-01-01" max="2100-12-31" />
+        <input type="submit" value="絞り込み">
+    </form>
+
     <a href="/new">
         <button class="new-button" type="button">新規投稿</button>
     </a>
@@ -47,8 +55,7 @@
                         <div class="text">
                             返信　: <span th:text="${comment.content}"></span>
                         </div>
-                    </div>
-                    <div class="sub-content">
+
                         <div class="delete-button">
                             <form th:action="@{/deleteComment/{id}(id=${comment.id})}" th:method="delete">
                                 <input type="submit" value="削除">
