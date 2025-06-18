@@ -1,24 +1,39 @@
 body {
-	background-color: #E3FFFF;
+	background-color: #E0FFFF;
+}
+
+.header-contents {
+	margin-left: 20px;
 }
 
 .main-contents {
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-left: 20px;
-	margin-right: 20px;
-	background-color: white;
+	margin: 20px;
+	padding: 10px 10px 5px 10px;
+	background-color: #B4CCCC;
 	height: 100%;
-	width: 800px;
+	width: 80%;
+}
+
+.footer-contents {
+	margin-left: 20px;
 }
 
 .tweet-box {
+    margin: 5px 0px;
 	width: 780px;
 	height: 56px;
 }
 
-.header {
-	text-align: right;
+button {
+	margin-bottom: 5px;
+}
+
+.delete-button{
+    display:inline-block;
+}
+
+.edit-button{
+    display:inline-block;
 }
 
 .profile {
@@ -55,21 +70,15 @@ a.profile .account {
 }
 
 .form-area {
-	margin-top: 00px;
-	margin-right: 00px;
-	margin-bottom: 00px;
-	margin-left: 00px;
-	background-color: #ECECFF;
+	margin: 10px;
+	padding: 10px;
+	background-color: white;
 }
 
 .message-icon {
-	border-bottom-style: ridge;
-	margin-top: 10px;
-	margin-right: 5px;
-	margin-bottom: 120px;
-	margin-left: 5px;
-	height: 80px;
-	padding-bottom: 15px;
+	margin-bottom: 5px;
+	padding: 5px;
+	background-color: white;
 }
 
 .message-icon .icon {
@@ -78,10 +87,6 @@ a.profile .account {
 	margin-bottom: 1px;
 	margin-left: 1px;
 	float: left;
-}
-
-.message-icon .text {
-	height: 40px;
 }
 
 .message-icon .message {
@@ -124,13 +129,4 @@ label {
 	margin-bottom: 10px;
 	margin-left: 10px;
 	color: red;
-}
-.sub-content{
-    display:flex;
-    margin-left:10px;
-    padding-button:20px;
-}
-
-.edit-button{
-    margin-left: 5px;
 }

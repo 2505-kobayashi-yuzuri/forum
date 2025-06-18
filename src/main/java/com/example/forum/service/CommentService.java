@@ -5,6 +5,7 @@ import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.CommentRepository;
 import com.example.forum.repository.entity.Comment;
 import com.example.forum.repository.entity.Report;
+import org.aspectj.bridge.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class CommentService {
      * レコード全件取得処理
      */
     public List<CommentForm> findAllComment() {
-        List<Comment> results = commentRepository.findAll();
+        List<Comment> results = commentRepository.findAllByOrderByIdDesc();
         List<CommentForm> comments = setCommentForm(results);
         return comments;
     }
@@ -56,8 +57,18 @@ public class CommentService {
     private Comment setCommentEntity(CommentForm reqComment) {
         Comment  comment = new Comment();
         comment.setId(reqComment.getId());
-        comment.setMessage_id(reqComment.getId());
+        comment.setMessage_id(reqComment.getMessage_id());
         comment.setContent(reqComment.getContent());
         return  comment;
+    }
+
+    /*
+     *　DBから編集するコメントを受け取りcontrollerに渡す処理
+     */
+    public CommentForm editComment(Integer id) {
+        List<Comment> results = new ArrayList<>();
+        results.add((Comment) commentRepository.findById(id).orElse(null));
+        List<CommentForm> reports = setCommentForm(results);
+        return reports.get(0);
     }
 }

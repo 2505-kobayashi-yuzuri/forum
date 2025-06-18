@@ -31,20 +31,19 @@ public class ForumController {
         List<ReportForm> contentData = reportService.findAllReport();
         //返信の全件取得
         List<CommentForm> commentData = commentService.findAllComment();
+        CommentForm commentForm = new CommentForm();
+        mav.addObject("commentModel", commentForm);
         // 画面遷移先を指定
         mav.setViewName("/top");
         // 投稿データオブジェクトを保管
         mav.addObject("contents", contentData);
         // 返信データのオブジェクトを保管
         mav.addObject("comments", commentData);
-        mav.addObject("commentModel", new CommentForm());
         return mav;
     }
 
     @PostMapping("/addComment")
-    public ModelAndView addComment(@ModelAttribute("commentForm") CommentForm commentForm,
-                                   BindingResult result){
-
+    public ModelAndView addComment(@ModelAttribute("commentForm") CommentForm commentForm){
         ModelAndView mav = new ModelAndView();
         // コメントをテーブルに格納
         commentService.saveComment(commentForm);
@@ -115,4 +114,32 @@ public class ForumController {
         return new ModelAndView("redirect:/");
     }
 
+    /*
+     *　コメント編集画面の遷移
+     */
+    @GetMapping("/editComment/{id}")
+    public ModelAndView editComment(@PathVariable Integer id){
+        ModelAndView mav = new ModelAndView();
+        //idに結びついている投稿内容を取得
+        CommentForm comment = commentService.editComment(id);
+        //取得した投稿内容を加え
+        mav.addObject("commentModel", comment);
+        //画面遷移とともに投稿内容を送る
+        mav.setViewName("/editComment");
+        return mav;
+    }
+
+    /*
+     *　コメント編集を受け取りserviceに流す処理
+     */
+    @PutMapping("/editUpdate/{id}")
+    public ModelAndView updateContent (@PathVariable Integer id,
+                                       @ModelAttribute("commentModel") CommentForm comment) {
+        // UrlParameterのidを更新するentityにセット
+        comment.setId(id);
+        // 編集した投稿を更新
+        commentService.saveComment(comment);
+        // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
 }
