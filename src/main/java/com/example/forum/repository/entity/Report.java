@@ -21,5 +21,8 @@ public class Report {
 
     @Column
     private String content;
+
+    @Column
+    private String createdDate;
 }
 

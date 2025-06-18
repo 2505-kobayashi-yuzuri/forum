@@ -3,10 +3,14 @@ package com.example.forum.service;
 import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.ReportRepository;
 import com.example.forum.repository.entity.Report;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,8 +21,28 @@ public class ReportService {
     /*
      * レコード全件取得処理
      */
-    public List<ReportForm> findAllReport() {
-        List<Report> results = reportRepository.findAllByOrderByIdDesc();
+    public List<ReportForm> findAllReport(String start, String end) throws ParseException {
+        String setStart = null;
+        String setEnd = null;
+        SimpleDateFormat simpleDefault= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(StringUtils.isBlank(start)) {
+            setStart = "2020-01-01 00:00:00";
+        } else {
+            setStart = start + " 00:00:00";
+        }
+
+        if(StringUtils.isBlank(end)) {
+            Date nowDate = new Date();
+            setEnd = simpleDefault.format(nowDate);
+        } else {
+            setEnd = end + " 23:59:59";
+        }
+
+        Date startDate = simpleDefault.parse(setStart);
+        Date endDate = simpleDefault.parse(setEnd);
+
+
+        List<Report> results = reportRepository.findByCreatedDateBetween(startDate, endDate);
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -32,6 +56,7 @@ public class ReportService {
             ReportForm report = new ReportForm();
             Report result = results.get(i);
             report.setId(result.getId());
+            report.setCreatedDate(result.getCreatedDate());
             report.setContent(result.getContent());
             reports.add(report);
         }
@@ -53,6 +78,7 @@ public class ReportService {
         Report report = new Report();
         report.setId(reqReport.getId());
         report.setContent(reqReport.getContent());
+        report.setCreatedDate(reqReport.getCreatedDate());
         return report;
     }
 
