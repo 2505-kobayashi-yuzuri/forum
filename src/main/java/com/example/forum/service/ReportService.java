@@ -40,9 +40,8 @@ public class ReportService {
 
         Date startDate = simpleDefault.parse(setStart);
         Date endDate = simpleDefault.parse(setEnd);
-
-
-        List<Report> results = reportRepository.findByCreatedDateBetween(startDate, endDate);
+        //作成日時を絞り込みかつ、更新日時での降順に設定
+        List<Report> results = reportRepository.findAllByCreatedDateBetweenOrderByUpdatedDateDesc(startDate, endDate);
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -57,6 +56,7 @@ public class ReportService {
             Report result = results.get(i);
             report.setId(result.getId());
             report.setCreatedDate(result.getCreatedDate());
+            report.setUpdatedDate(result.getUpdatedDate());
             report.setContent(result.getContent());
             reports.add(report);
         }
@@ -79,6 +79,7 @@ public class ReportService {
         report.setId(reqReport.getId());
         report.setContent(reqReport.getContent());
         report.setCreatedDate(reqReport.getCreatedDate());
+        report.setUpdatedDate(reqReport.getUpdatedDate());
         return report;
     }
 

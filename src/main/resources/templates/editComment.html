@@ -13,6 +13,7 @@
     <form th:action="@{/editUpdate/{id}(id=${commentModel.id})}" th:object="${commentModel}" th:method="put">
         <div class="form-area">
             <label>投稿内容</label>
+            <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
             <textarea class="tweet-box" name="content" th:field="*{content}" size="20" maxlength="200" /></textarea><br/>
             <input name="message_id" th:value="${commentModel.message_id}" type="hidden">
             <input type="submit" value="更新"/>

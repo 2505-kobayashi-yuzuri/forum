@@ -8,10 +8,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 //サーブレットのようなもので処理の中心になる
 @Controller
@@ -44,8 +46,22 @@ public class ForumController {
     }
 
     @PostMapping("/addComment")
-    public ModelAndView addComment(@ModelAttribute("commentForm") CommentForm commentForm){
+    public ModelAndView addComment(@Validated @ModelAttribute("commentModel") CommentForm commentForm, BindingResult result,
+                                   @ModelAttribute("start") String start, @ModelAttribute("end")  String end) throws ParseException {
         ModelAndView mav = new ModelAndView();
+        if(result.hasErrors()) {
+            List<ReportForm> contentData = reportService.findAllReport(start, end);
+            //返信の全件取得
+            List<CommentForm> commentData = commentService.findAllComment();
+            mav.addObject("commentModel", commentForm);
+            // 画面遷移先を指定
+            mav.setViewName("/top");
+            // 投稿データオブジェクトを保管
+            mav.addObject("contents", contentData);
+            // 返信データのオブジェクトを保管
+            mav.addObject("comments", commentData);
+            return mav;
+        }
         // コメントをテーブルに格納
         commentService.saveComment(commentForm);
         // rootへリダイレクト
@@ -71,8 +87,13 @@ public class ForumController {
      * 新規投稿処理
      */
     @PostMapping("/add")
-    public ModelAndView addContent(@ModelAttribute("formModel") ReportForm reportForm){
+    public ModelAndView addContent(@Validated @ModelAttribute("formModel") ReportForm reportForm, BindingResult result) {
         // 投稿をテーブルに格納
+        if(result.hasErrors()) {
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/new");
+            return mav;
+        }
         reportService.saveReport(reportForm);
         // rootへリダイレクト
         return new ModelAndView("redirect:/");
@@ -114,8 +135,11 @@ public class ForumController {
      * 編集処理
      */
     @PutMapping("/update/{id}")
-    public ModelAndView updateContent (@PathVariable Integer id,
-                                       @ModelAttribute("formModel") ReportForm report) {
+    public ModelAndView updateContent ( @PathVariable Integer id,
+                                       @ModelAttribute("formModel") @Validated ReportForm report, BindingResult result) {
+        if(result.hasErrors()) {
+            return new ModelAndView("/edit");
+        }
         // UrlParameterのidを更新するentityにセット
         report.setId(id);
         // 編集した投稿を更新
@@ -144,10 +168,12 @@ public class ForumController {
      */
     @PutMapping("/editUpdate/{id}")
     public ModelAndView updateContent (@PathVariable Integer id,
-                                       @ModelAttribute("commentModel") CommentForm comment) {
+                                       @ModelAttribute("commentModel") @Validated CommentForm comment, BindingResult result) {
+        if(result.hasErrors()) {
+            return new ModelAndView("/editComment");
+        }
         // UrlParameterのidを更新するentityにセット
         comment.setId(id);
-//        comment.setMessage_id(message_id);
         // 編集した投稿を更新
         commentService.saveComment(comment);
         // rootへリダイレクト
